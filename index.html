@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>She Loiter Lens — street-level safety audit</title>
-<meta name="description" content="Log in, pick a session, and code streets for women's safety by clicking on Street View or your own images.">
+<title>Pappilon — Data Collection Tool</title>
+<meta name="description" content="Log in, pick a session, and code public-space experiences through harassment, street conditions, and human behaviour/social response lenses.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E📍%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -263,7 +263,7 @@ summary{cursor:pointer;font-weight:700}
   <header class="top">
     <div class="brand">
       <svg class="logo" viewBox="0 0 40 40" aria-hidden="true"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff6b9d"/><stop offset="1" stop-color="#7a4dff"/></linearGradient></defs><rect width="40" height="40" rx="12" fill="url(#lg)"/><path d="M20 7.5c-5.200 0-9.300 3.900-9.300 8.900 0 6.200 9.300 15.100 9.300 15.100s9.300-8.900 9.300-15.100c0-5-4.100-8.900-9.300-8.900z" fill="#fff"/><circle cx="20" cy="16.500" r="3.800" fill="#7a4dff"/></svg>
-      <div><b>She Loiter Lens</b><small>street-level safety audit</small></div>
+      <div><b>She Loiter Lens</b><small>street experience &amp; social response research</small></div>
     </div>
     <div class="hud" id="hud"></div>
     <nav class="actions" id="topActions">
@@ -304,9 +304,9 @@ summary{cursor:pointer;font-weight:700}
 <!-- LOGIN / REGISTER -->
 <section class="welcome" id="auth">
   <div class="hero">
-    <span class="pill">🏙️ A tool for feminist street audits</span>
-    <h1>She <em>Loiter</em> Lens</h1>
-    <p class="lead">Log in to report streets for women's safety — one point, one pin at a time.</p>
+    <span class="pill">🏙️ Women's Experience Mapping Tool</span>
+    <h1>Pappilon</h1>
+    <p class="lead">Log in to map your experience in public transportation spaces — one point at a time.</p>
     <div class="auth-card">
       <div class="seg" id="authSeg"><button data-act="authtab" data-arg="login" class="on">Log in</button><button data-act="authtab" data-arg="register">Create account</button></div>
       <form id="authForm" novalidate>
@@ -342,7 +342,7 @@ summary{cursor:pointer;font-weight:700}
 
 <div id="modalRoot"></div>
 <div id="toasts"></div>
-<div id="dragmask" class="hidden">📂 Drop panoramas — name them after the point ID to match automatically</div>
+<div id="dragmask" class="hidden">📂 Drop image files to load them into the selected point, or match filenames to point IDs</div>
 <input type="file" id="fileImg" accept="image/*" multiple hidden>
 <input type="file" id="fileCamera" accept="image/*" capture="environment" hidden>
 <input type="file" id="fileCsv" accept=".csv,text/csv" hidden>
@@ -352,7 +352,7 @@ summary{cursor:pointer;font-weight:700}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script type="module">
 /* =====================================================================
-   She Loiter Lens — single-file app.
+   Pappilon — single-file app.
    Project/API settings are managed by editing CONFIG in this file.
    Only ever use the *anon / publishable* Supabase key here.
    ===================================================================== */
@@ -360,7 +360,7 @@ const CONFIG = {
   SUPABASE_URL: 'https://qnidqvklagwjrihlocxh.supabase.co',              // https://xxxx.supabase.co
   SUPABASE_KEY: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFuaWRxdmtsYWd3anJpaGxvY3hoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ1NDEwNzIsImV4cCI6MjEwMDExNzA3Mn0.R98ONf6DTove9-5Vp1zj-Q7-mc4zt9wid-Zpxny6ngs',              // anon / publishable key
   GOOGLE_MAPS_KEY: 'AIzaSyBnwnf7X6pnw2qqBtY4OoFJybGr4J7XmZg',           // key with "Street View Static API" enabled (restrict it to your site's URL!)
-  CARTO_BASEMAP_KEY: 'cb1_4d4m_1_a57cade09591c8022907f223',         // CARTO Basemaps API key; restrict it to your site's domain
+  CARTO_BASEMAP_KEY: 'AIzaSyBnwnf7X6pnw2qqBtY4OoFJybGr4J7XmZg',         // CARTO Basemaps API key; restrict it to your site's domain
   EMAIL_DOMAIN: 'sheloiterlens.app', // user IDs become <id>@this-domain behind the scenes (no email is ever sent)
   EXPORT_BUCKET: 'exports'       // Supabase Storage bucket used for share links
 };
@@ -423,6 +423,20 @@ const LENSES = [
       { key: 'activity', emoji: '🏪', label: 'Active edges', desc: 'Are shops, homes, vendors or other activities keeping the street visible and active?', tags: ['Open shops','Vendors','Homes facing street','Late activity','Blank frontage'] },
       { key: 'enjoy', emoji: '🎈', label: 'Comfort & pleasure', desc: 'Does the place invite women to enjoy, pause, meet, play or simply be there?', tags: ['Greenery','View','Play','Food','Pleasant','Dull / hostile'] },
       { key: 'other_s', emoji: '✍️', label: 'Other / describe it', desc: 'Something important about this street cannot be described by the icons. Write it in your own words.', tags: [] }
+    ]
+  },
+  {
+    id: 'human', emoji: '🧠', name: 'Human behaviour & social response',
+    blurb: 'Record observable actions and responses around an incident. Do not assume or diagnose a person’s motive from an image alone; distinguish what is visible from your interpretation.',
+    params: [
+      { key: 'peer', emoji: '👥', label: 'Peer / group response', desc: 'What can be observed about how companions respond to the behaviour?', tags: ['Laughing','Encouraging','Joining in','Watching silently','Disapproving','Separating from group','No group visible'] },
+      { key: 'bystander', emoji: '🫱', label: 'Bystander response', desc: 'Record visible witness responses without assuming what a bystander was thinking.', tags: ['Directly intervenes','Offers help','Distracts / interrupts','Seeks assistance','Looks / notices','Moves away','No visible response','Response unclear'] },
+      { key: 'target', emoji: '🧍', label: 'Target response / impact', desc: 'Record only visible or self-reported responses, not inferred feelings.', tags: ['Moves away','Changes route / seat','Challenges behaviour','Seeks help','Appears to freeze','Continues activity','Self-reported discomfort','Not observable'] },
+      { key: 'accountability', emoji: '⚖️', label: 'Accountability / deterrence', desc: 'What visible response or consequence follows? Absence of visible action does not prove impunity.', tags: ['Staff intervenes','Security / police respond','Rule or warning visible','Peer disapproval','Behaviour stops','Behaviour continues','Behaviour escalates','Outcome unknown'] },
+      { key: 'social_norms', emoji: '📣', label: 'Social cues / norms', desc: 'Record observable cues that may communicate approval, disapproval or expectations; treat explanations as hypotheses.', tags: ['Approval appears visible','Disapproval appears visible','Gendered comment / joke','Victim-blaming language reported','Respectful correction','Norm cue unclear'] },
+      { key: 'opportunity', emoji: '🚪', label: 'Situation / opportunity', desc: 'Record situational factors that may shape interaction, without treating them as excuses or proof of motive.', tags: ['Crowded setting','Relatively isolated','Group has control of space','Exit / help accessible','Staff nearby','Low supervision visible','Situation unclear'] },
+      { key: 'interaction', emoji: '🔄', label: 'Interaction sequence', desc: 'Record how the interaction changes over time, when known.', tags: ['Starts','Continues after no / avoidance','Interrupted','Stops after challenge','Stops without visible challenge','Escalates','Repeated pattern reported','Sequence unknown'] },
+      { key: 'interpretation_h', emoji: '✍️', label: 'Interpretation / describe', desc: 'Separate direct observation from interpretation. State uncertainty and avoid claiming to know internal motives.', tags: [] }
     ]
   }
 ];
@@ -818,9 +832,14 @@ function renderToolbar() {
     <div class="tb-nav"><button class="icon" data-act="prev" title="Previous point (P)">◀</button><button class="icon" data-act="next" title="Next point (N)">▶</button></div>
     <div class="tb-title"><b>${esc(p.name)}</b><small>${esc(p.id)} · ${p.lat.toFixed(5)}, ${p.lng.toFixed(5)}</small></div>
     <div class="tb-actions">
-      <button class="btn sm" data-act="camera" title="Take a field photo">📷 Camera</button>
+      <button class="btn sm" disabled aria-disabled="true" title="Disabled for this study version">📷 Camera</button>
       <button class="btn sm" data-act="gsv" title="Fetch the closest Google Street View">🛣 Street View</button>
-      <button class="btn sm" data-act="upload">⬆ Own image</button>
+      <button class="btn sm" data-act="upload" title="Load your own photo or panorama for this point">⬆ Own image</button>
+      <div class="transit-picker"><span class="label">Standard transit interior</span>
+        <button class="btn sm" data-act="transit" data-arg="bus">🚌 Bus</button>
+        <button class="btn sm" data-act="transit" data-arg="metro">🚇 Metro</button>
+        <button class="btn sm" data-act="transit" data-arg="local_train">🚆 Local train</button>
+      </div>
       ${p.img && V.kind ? `<button class="btn sm" data-act="togglemode" title="Switch between 360° and flat view">${V.kind === 'sphere' ? '🌐 360° view' : '🖼 Flat view'}</button>` : ''}
       <a class="btn sm" target="_blank" rel="noopener" href="${svLink(p)}" title="Open Google Street View in a new tab">↗ Maps</a>
     </div>`;
@@ -832,14 +851,14 @@ function renderCode() {
   const activeKey = a ? a.param : S.activeParam;
   const palette = `<section class="card"><div class="card-h"><b>${a ? 'This pin is about…' : 'Next pin is about…'}</b></div>
     <div class="seg">${LENSES.map(l => `<button data-act="lens" data-arg="${l.id}" class="${l.id === lens.id ? 'on' : ''}">${l.emoji} ${esc(l.name)}</button>`).join('')}</div>
-    <p class="q">${esc(lens.blurb)}</p>
+    <p class="q">${esc(lens.blurb)}</p>${lens.id === 'human' ? '<div class="lens-note"><b>Evidence rule:</b> code visible actions first. Mark motive, intent or social meaning as an interpretation/hypothesis unless supported by direct testimony or other evidence.</div>' : ''}
     <div class="params">${lens.params.map(pr => `<button class="prm ${pr.key === activeKey ? 'on' : ''}" data-act="param" data-arg="${esc(pr.key)}" title="${esc(pr.desc)}"><span>${esc(pr.emoji)}</span><small>${esc(pr.label)}</small></button>`).join('')}</div></section>`;
   let editor;
   if (a) {
     const pr = paramOf(a), base = pr ? pr.tags : [], tagList = [...base, ...a.tags.filter(t => !base.includes(t))];
     editor = `<section class="card"><div class="card-h"><b>${esc(emojiFor(a))} ${esc(a.paramLabel || (pr && pr.label) || 'Pin')}</b><button class="icon" data-act="delpin" title="Delete pin (Del)">🗑</button></div>
       <p class="q">${esc(pr ? pr.desc : '')}</p>
-      ${String(a.param || '').startsWith('other') ? `<label class="fine" style="display:block;margin:8px 0 5px"><b>Describe it in your own words</b></label><textarea class="note" id="noteIn" placeholder="What is happening here that the icons cannot describe? Be specific about what you see, hear or experienced.">${esc(a.note)}</textarea>` : `<div class="scores">${SCORE.map(s => `<button class="sc ${a.score === s.n ? 'on' : ''}" style="--c:${scoreColor(s.n)}" data-act="score" data-arg="${s.n}" title="Key ${s.n}"><span>${s.emoji}</span><small>${s.label}</small></button>`).join('')}</div>
+      ${(String(a.param || '').startsWith('other') || a.param === 'interpretation_h') ? `<label class="fine" style="display:block;margin:8px 0 5px"><b>${a.param === 'interpretation_h' ? 'Observation and interpretation (keep separate)' : 'Describe it in your own words'}</b></label><textarea class="note" id="noteIn" placeholder="${a.param === 'interpretation_h' ? 'What was directly observed? What is your interpretation? What remains uncertain?' : 'What is happening here that the icons cannot describe? Be specific about what you see, hear or experienced.'}">${esc(a.note)}</textarea>` : `<div class="scores">${SCORE.map(s => `<button class="sc ${a.score === s.n ? 'on' : ''}" style="--c:${scoreColor(s.n)}" data-act="score" data-arg="${s.n}" title="Key ${s.n}"><span>${s.emoji}</span><small>${s.label}</small></button>`).join('')}</div>
       <div class="tags">${tagList.map(t => `<button class="chip ${a.tags.includes(t) ? 'on' : ''}" data-act="tag" data-arg="${esc(t)}">${esc(t)}</button>`).join('')}<input class="tag-in" id="tagIn" placeholder="+ tag" maxlength="28"></div>
       <textarea class="note" id="noteIn" placeholder="What do you notice? e.g. “shutters down after 7pm, nowhere to sit”">${esc(a.note)}</textarea>`}
       <button class="btn sm block" data-act="selpin" data-arg="">✔ Done with this pin</button></section>`;
@@ -878,13 +897,13 @@ function nextUndone() { const n = S.points.length, i = S.points.findIndex(p => p
 function setOverlay(kind, d = {}) {
   const o = $('#overlay'); if (!kind) { o.className = 'overlay hidden'; o.innerHTML = ''; return; }
   o.className = 'overlay'; const hasKey = !!cfg('GOOGLE_MAPS_KEY');
-  const upl = '<button class="btn" data-act="upload">⬆ Load my own image</button>';
+  const transitOptions = '<button class="btn primary" data-act="transit" data-arg="bus">🚌 Standard bus</button><button class="btn primary" data-act="transit" data-arg="metro">🚇 Standard metro</button><button class="btn primary" data-act="transit" data-arg="local_train">🚆 Standard local train</button>';
   if (kind === 'loading' || kind === 'searching') o.innerHTML = `<div class="ov-card"><div class="spin"></div><h3>${kind === 'searching' ? 'Finding the closest Street View…' : 'Loading image…'}</h3><p>${esc(d.text || 'Hang tight')}</p></div>`;
-  else if (kind === 'empty') o.innerHTML = `<div class="ov-card"><div class="big">🛣️</div><h3>No image for this point yet</h3><p>${hasKey ? 'I\'ll look for the closest Google Street View, or you can load your own panorama or photo.' : 'Load your own panorama or photo. Ask your project administrator to configure Google Street View in the HTML code if you need Street View.'}</p><div class="row">${hasKey ? '<button class="btn primary" data-act="gsv">🛣 Get Street View</button>' : ''}${upl}</div></div>`;
-  else if (kind === 'nokey') o.innerHTML = `<div class="ov-card"><div class="big">🔑</div><h3>Street View isn't set up</h3><p>This copy has no Google Maps API key configured in the HTML code yet. Ask your project administrator to configure Street View, or load your own image.</p><div class="row">${upl}</div>`;
-  else if (kind === 'none') o.innerHTML = `<div class="ov-card"><div class="big">🤷‍♀️</div><h3>No Street View within ${d.radius || 120} m</h3><p>Google has no imagery close to this point. Try a wider search, or load your own image.</p><div class="row"><button class="btn primary" data-act="wider">🔎 Search 400 m</button>${upl}</div></div>`;
-  else if (kind === 'error') o.innerHTML = `<div class="ov-card"><div class="big">😕</div><h3>Couldn't load the image</h3><p>${esc(d.text || 'Something went wrong.')}</p><div class="row"><button class="btn" data-act="gsv">↻ Try again</button>${upl}</div></div>`;
-  else if (kind === 'lost') o.innerHTML = `<div class="ov-card"><div class="big">📦</div><h3>Image isn't on this device</h3><p>Your pins are safe in the cloud, but the picture itself is stored only in the browser it was loaded in. Load it again to see your pins.</p><div class="row">${hasKey ? '<button class="btn primary" data-act="gsv">🛣 Get Street View</button>' : ''}${upl}</div></div>`;
+  else if (kind === 'empty') o.innerHTML = `<div class="ov-card"><div class="big">🛣️</div><h3>No image for this point yet</h3><p>${hasKey ? 'Load nearby Street View or choose a standard public-transport interior panorama from this app’s GitHub directory.' : 'Choose a standard public-transport interior panorama from this app’s GitHub directory.'}</p><div class="row">${hasKey ? '<button class="btn" data-act="gsv">🛣 Get Street View</button>' : ''}${transitOptions}</div></div>`;
+  else if (kind === 'nokey') o.innerHTML = `<div class="ov-card"><div class="big">🔑</div><h3>Street View isn't set up</h3><p>This copy has no Google Maps API key configured in the HTML code yet. You can still use the standard transit interior panoramas.</p><div class="row">${transitOptions}</div>`;
+  else if (kind === 'none') o.innerHTML = `<div class="ov-card"><div class="big">🤷‍♀️</div><h3>No Street View within ${d.radius || 120} m</h3><p>Google has no imagery close to this point. Try a wider search or choose a standard transit interior.</p><div class="row"><button class="btn" data-act="wider">🔎 Search 400 m</button>${transitOptions}</div></div>`;
+  else if (kind === 'error') o.innerHTML = `<div class="ov-card"><div class="big">😕</div><h3>Couldn't load the image</h3><p>${esc(d.text || 'Something went wrong.')}</p><div class="row"><button class="btn" data-act="gsv">↻ Try again</button>${transitOptions}</div></div>`;
+  else if (kind === 'lost') o.innerHTML = `<div class="ov-card"><div class="big">📦</div><h3>Image isn't on this device</h3><p>Your pins are safe in the cloud, but the picture itself is stored only in the browser it was loaded in. Load Street View or select a standard transit interior again.</p><div class="row">${hasKey ? '<button class="btn" data-act="gsv">🛣 Get Street View</button>' : ''}${transitOptions}</div></div>`;
 }
 function destroyViewer() { try { V.psv && V.psv.destroy(); } catch {} V.ro && V.ro.disconnect(); V.psv = V.markers = V.flat = V.ro = V.host = null; V.kind = null; $('#viewer').innerHTML = ''; }
 let objUrl = null;
@@ -1037,6 +1056,38 @@ function stitchPano(bms) {
   }
   ctx.putImageData(img, 0, 0);
   return new Promise((res, rej) => out.toBlob(b => b ? res(b) : rej(new Error('Could not encode the panorama')), 'image/jpeg', .92));
+}
+
+/* ---------- standard public-transport panorama assets ----------
+   Replace these placeholder files in your GitHub repository. Paths are relative
+   to this HTML file and work on GitHub Pages, including repository subpaths.
+   Recommended asset: equirectangular 2:1 JPG panorama (for example 4096x2048).
+*/
+const TRANSIT_PANORAMAS = {
+  bus: { label: 'Bus', path: './images/bus_interior_panorama.jpg' },
+  metro: { label: 'Metro', path: './images/metro_interior_panorama.jpg' },
+  local_train: { label: 'Local train', path: './images/local_train_interior_panorama.jpg' }
+};
+async function loadTransitPanorama(type) {
+  const p = cur(), asset = TRANSIT_PANORAMAS[type];
+  if (!p) { toast('Create or select a point first.', { emoji: '📍' }); return; }
+  if (!asset) return;
+  if (p.img && !confirm(`Replace the current image for this point with the standard ${asset.label.toLowerCase()} interior panorama?`)) return;
+  setOverlay('loading', { text: `Loading the standard ${asset.label.toLowerCase()} interior panorama…` });
+  try {
+    const response = await fetch(asset.path, { cache: 'no-cache' });
+    if (!response.ok) throw new Error(`Could not load ${asset.path} (HTTP ${response.status}). Add the image file at that exact path in your GitHub repository.`);
+    const blob = await response.blob();
+    if (!blob.type.startsWith('image/')) throw new Error(`The file at ${asset.path} is not being served as an image. Check the filename and extension.`);
+    await idb.put(imgKey(p), blob);
+    p.img = { source: `Standard interior: ${asset.label}`, name: asset.path, attribution: `Standard reference panorama · ${asset.label}`, transitType: type, assetPath: asset.path };
+    S.viewMode[p.id] = 'sphere'; touchPt(p); save(); refreshItem(p);
+    await showImage(p);
+    toast(`${asset.label} interior loaded. Click the panorama to add coding pins.`, { emoji: '🖼️', ms: 4500 });
+  } catch (err) {
+    setOverlay('error', { text: err.message || `Could not load ${asset.path}.` });
+    toast(`Missing panorama asset: ${asset.path}`, { emoji: '⚠️', ms: 5000 });
+  }
 }
 
 /* ---------- own images ---------- */
@@ -1258,7 +1309,7 @@ function openHelp() {
   openModal('How She Loiter Lens works', `
     <p><b>1 · Log in</b> with a user ID and password — your pins are saved to your account as you go.</p>
     <p><b>2 · Record places.</b> Tap the map or use your phone location, then drag markers to the exact spot. You can also use the session CSV.</p>
-    <p><b>3 · Code an image.</b> Opening a point fetches the closest <b>Google Street View</b> automatically (stitched into a 360° view), or press <i>Own image</i> to load a panorama or photo. Dropping a folder of images named after the point IDs (<code>S1-01.jpg</code>…) matches them automatically.</p>
+    <p><b>3 · Code an image.</b> Opening a point fetches the closest <b>Google Street View</b> automatically (stitched into a 360° view). Use <i>Own image</i> to load a personal photo or panorama, or select a standard bus, metro or local-train interior. Dropping images named after point IDs (<code>S1-01.jpg</code>…) matches them automatically.</p>
     <p><b>4 · Tap, move &amp; rate.</b> Choose an icon from <i>Why Loiter</i> or <i>She City</i>, tap the image to drop a pin, then tap and drag a pin to reposition it. Score it 1–5, add tags and a note. Touch and hold a point in the list to delete it. Finish each point with a gut-check.</p>
     <p><b>5 · Finish &amp; export.</b> Download a .zip of annotated JPGs and share it by phone, email or WhatsApp.</p>
     <details><summary>⌨️ Shortcuts</summary><p class="kbd"><kbd>1</kbd>–<kbd>5</kbd> rate selected pin · <kbd>Del</kbd> delete pin · <kbd>Esc</kbd> deselect · <kbd>N</kbd> / <kbd>P</kbd> next / previous point · <kbd>D</kbd> complete point</p></details>
@@ -1349,7 +1400,7 @@ async function act(name, arg, el, e) {
     case 'authtab': setAuthMode(arg); break;
     case 'locatePoint': locatePoint(); break;
     case 'uploadCsv': $('#fileCsv').click(); break;
-    case 'camera': captureCurrentPhoto(); break;
+    case 'camera': toast('Camera capture is disabled in this study version.', { emoji: 'ℹ️' }); break;
     case 'beginCoding': beginCoding(false); break;
 
     case 'account': openAccount(); break;
@@ -1366,6 +1417,7 @@ async function act(name, arg, el, e) {
     case 'prev': step(-1); break;
     case 'next': step(1); break;
     case 'upload': $('#fileImg').click(); break;
+    case 'transit': await loadTransitPanorama(arg); break;
     case 'gsv': if (p) { if (p.img && !confirm('Replace the current image with Google Street View?')) break; if (p.img) { p.img = null; } fetchStreetView(p); } break;
     case 'wider': if (p) fetchStreetView(p, { radius: 400 }); break;
     case 'togglemode': if (p && V.kind) { S.viewMode[p.id] = V.kind === 'sphere' ? 'flat' : 'sphere'; showImage(p); } break;
@@ -1406,14 +1458,12 @@ pointList.addEventListener('click', e => { if (Date.now() < suppressPointClickUn
 
 /* ---------- files, drag & drop, inputs, keyboard ---------- */
 $('#fileCsv').addEventListener('change', e => { const f=e.target.files?.[0]; if(f) handleCsvUpload(f); e.target.value=''; });
-$('#fileCamera').addEventListener('change', e => { const f=e.target.files?.[0]; if(f) handleCurrentCamera(f); e.target.value=''; });
-$('#fileImg').addEventListener('change', e => { if (!cur() && e.target.files.length === 1) toast('Select a point first', { emoji: '📍' }); else handleImageFiles(e.target.files); e.target.value = ''; });
+$('#fileCamera').addEventListener('change', e => { e.target.value=''; });
+$('#fileImg').addEventListener('change', async e => { const files = e.target.files ? [...e.target.files] : []; e.target.value = ''; if (files.length) await handleImageFiles(files); });
 $('#search').addEventListener('input', renderList); $('#filter').addEventListener('change', renderList);
-let dragDepth = 0;
-addEventListener('dragenter', e => { if (S.session && e.dataTransfer?.types?.includes('Files')) { dragDepth++; $('#dragmask').classList.remove('hidden'); } });
-addEventListener('dragleave', () => { if (--dragDepth <= 0) { dragDepth = 0; $('#dragmask').classList.add('hidden'); } });
-addEventListener('dragover', e => e.preventDefault());
-addEventListener('drop', e => { e.preventDefault(); dragDepth = 0; $('#dragmask').classList.add('hidden'); if (S.session) handleImageFiles(e.dataTransfer.files); });
+addEventListener('dragover', e => { if (e.dataTransfer?.types?.includes('Files')) { e.preventDefault(); $('#dragmask').classList.remove('hidden'); } });
+addEventListener('dragleave', e => { if (!e.relatedTarget) $('#dragmask').classList.add('hidden'); });
+addEventListener('drop', async e => { if (!e.dataTransfer?.types?.includes('Files')) return; e.preventDefault(); $('#dragmask').classList.add('hidden'); const files = [...(e.dataTransfer.files || [])]; if (files.length) await handleImageFiles(files); });
 document.addEventListener('input', e => { if (e.target.id === 'noteIn') { const a = selPinObj(); if (a) { a.note = e.target.value; if (String(a.param || '').startsWith('other')) { const clean = e.target.value.trim().replace(/\s+/g,' '); a.paramLabel = clean ? `Other: ${clean.slice(0, 55)}${clean.length > 55 ? '…' : ''}` : 'Other / describe it'; } touchAnn(a); save(); renderPins(); } } });
 document.addEventListener('change', e => { if (e.target.id === 'noteIn') { refreshItem(cur()); renderHeader(); renderCode(); } });
 document.addEventListener('keydown', e => {
