@@ -6,7 +6,7 @@
 
 <!-- !\[Pappilon banner](banner.png) -->
 
-[Pappilon banner](banner.png)
+\[Pappilon banner](banner.png)
 
 [Open the app](https://YOUR-USERNAME.github.io/YOUR-REPO/app/) · [Wiki](https://YOUR-USERNAME.github.io/YOUR-REPO/wiki.html) · [User guide (PDF)](user-guide.pdf) · [Project website](https://YOUR-USERNAME.github.io/YOUR-REPO/)
 
