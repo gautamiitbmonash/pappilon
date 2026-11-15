@@ -50,7 +50,7 @@ Other features:
 2. Tap the three-dot menu, then **Install app** (optional).
 3. Create an account, read and sign the consent form, then start a session.
 
-Full instructions are in the [wiki](wiki.html) and the [user guide](user-guide.pdf).
+Full instructions are in the [wiki](https://gautamiitbmonash.github.io/pappilonproject/wiki.html) and the [user guide](https://gautamiitbmonash.github.io/pappilonproject/user-guide.pdf).
 
 ## For researchers: setting up your own copy
 
@@ -119,7 +119,7 @@ Adjust this list to match your actual folders.
 * [Supabase](https://supabase.com) for accounts and storage
 * Map tiles by CARTO, map data from OpenStreetMap contributors
 
-See [NOTICE.md](NOTICE.md) for licences.
+See [NOTICE.md](https://gautamiitbmonash.github.io/pappilonproject/NOTICE.md) for licences.
 
 ## Privacy, ethics and safety
 
