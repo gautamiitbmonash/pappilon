@@ -8,7 +8,7 @@
 
 ![Pappilon banner](banner.png)
 
-[Open the app](https://gautamiitbmonash.github.io/pappilon/) · [Wiki](https://gautamiitbmonash.github.io/pappilonproject/wiki.html) · [User guide (PDF)]([user-guide](https://gautamiitbmonash.github.io/pappilonproject/).pdf) · [Project website](https://gautamiitbmonash.github.io/pappilonproject/)
+[Open the app](https://gautamiitbmonash.github.io/pappilon/) · [Wiki](https://gautamiitbmonash.github.io/pappilonproject/wiki.html) · [User guide (PDF)](https://gautamiitbmonash.github.io/pappilonproject/user-guide.pdf)] · [Project website](https://gautamiitbmonash.github.io/pappilonproject/)
 
 \---
 
