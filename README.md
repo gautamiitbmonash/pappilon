@@ -4,7 +4,7 @@
 
 > Participation is voluntary and uses informed consent. Pappilon is \*\*not\*\* an emergency service. In an emergency, call 112.
 
-<!-- Replace with a real screenshot or banner -->
+<!-- !\[Pappilon banner](banner.png) -->
 
 !\[Pappilon banner](banner.png)
 
